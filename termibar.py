@@ -1,47 +1,58 @@
+from powerliner import *
 import subprocess
-from time import sleep
-from ewmh import EWMH
-import Xlib
 
 
-# Run some program, here it is URXVT terminal.
-subprocess.Popen(['alacritty', '--class', 'termibar'])
-sleep(1)  # Wait until the term is ready, 1 second is really enought time.
-
-ewmh = EWMH()  # Python has a lib for EWMH, I use it for simplicity here.
-
-# Get all windows?
-windows = ewmh.display.screen().root.query_tree().children
-d = ewmh.display
-# Print WM_CLASS properties of all windows.
+def getVolume():
+    p = subprocess.Popen(
+        """awk -F"[][]" '/Left:/ { print $2 }' <(amixer sget Master)""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    vol = out.decode("utf-8").replace("\n", "").strip()
+    return vol
 
 
-def findRec(windows, cl):
-    if(windows == []):
-        return None
-    for w in windows:
-        if(w is not None):
-            w_class_e = w.get_wm_class()
-            if(w_class_e != None):
-                w_class, _ = w_class_e
-                if(w_class == cl):
-                    return w
-            w_f = findRec(w.query_tree().children, cl)
-            if (w_f is not None):
-                return w_f
+def getBatteryStatus():
+    p = subprocess.Popen(
+        """upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E \"state\"""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    stat = out.decode("utf-8").split(":")[1].replace("\n", "").strip()
+    return stat
 
 
-termibar_w = findRec(windows, "termibar")
-print(termibar_w.get_wm_class())
-wm_window_type = d.intern_atom('_NET_WM_WINDOW_TYPE')
-wm_strut = d.intern_atom('_NET_WM_STRUT')
-wm_window_type_dock = d.intern_atom('_NET_WM_WINDOW_TYPE_DOCK')
+def getBatteryCapacity():
+    p = subprocess.Popen(
+        """upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E \"percentage\"""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    cap = out.decode("utf-8").split(":")[1].replace("\n", "").strip()
+    return cap
 
-termibar_w.unmap()
-termibar_w.change_property(wm_window_type, Xlib.Xatom.ATOM, 32, [
-                           wm_window_type_dock, ], Xlib.X.PropModeReplace)
-termibar_w.map()
-d.flush()
 
-ewmh.setMoveResizeWindow(termibar_w, h=22)
-d.flush()
+def getBatteryTime():
+    p = subprocess.Popen(
+        """upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep -E \"time to\"""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    time = out.decode("utf-8").split(":")[1].replace("\n", "").strip()
+    return time
+
+
+def getTime():
+    p = subprocess.Popen(
+        """date +'%H:%M'""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    time = out.decode("utf-8").replace("\n", "").strip()
+    return time
+
+
+def getDate():
+    p = subprocess.Popen(
+        """date +'%d/%m/%Y'""", shell=True, stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    date = out.decode("utf-8").replace("\n", "").strip()
+    return date
+
+
+print(getVolume())
+print(getBatteryStatus())
+print(getBatteryCapacity())
+print(getDate())
+print(getTime())
+print(getBatteryTime())
