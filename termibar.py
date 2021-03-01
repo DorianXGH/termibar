@@ -1,5 +1,29 @@
 from powerliner import *
 import subprocess
+import asyncio
+from i3ipc.aio import Connection
+
+
+async def workspaces():
+    i3 = await Connection().connect()
+    workspaces = await i3.get_workspaces()
+    wksp = []
+    for wk in workspaces:
+        bg = "BG"
+        fg = "DarkGrey"
+        if (wk.focused):
+            bg = "Grey"
+            fg = "BG"
+        if (wk.urgent):
+            bg = "Red"
+            fg = "White"
+        wksp += [[fg, bg, " "+wk.name+" "]]
+
+    sq = PowerlineSequence(wksp, True)
+    print(sq.render())
+
+
+asyncio.run(workspaces())
 
 
 def getVolume():

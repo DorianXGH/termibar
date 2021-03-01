@@ -18,7 +18,9 @@ colors = {"Black": "\u001b[30m",
           "BrightBlue": "\u001b[94m",
           "BrightMagenta": "\u001b[95m",
           "BrightCyan": "\u001b[96m",
-          "White": "\u001b[97m"}
+          "White": "\u001b[97m",
+          "FG": "\u001b[38;2;230;209;230m",
+          "BG": "\u001b[38;2;27;26;49m"}
 reset = "\u001b[0m"
 background_colors = {"Black": "\u001b[40m",
                      "Red": "\u001b[41m",
@@ -35,7 +37,9 @@ background_colors = {"Black": "\u001b[40m",
                      "BrightBlue": "\u001b[104m",
                      "BrightMagenta": "\u001b[105m",
                      "BrightCyan": "\u001b[106m",
-                     "White": "\u001b[107m"}
+                     "White": "\u001b[107m",
+                     "FG": "\u001b[4;2;230;209;230m",
+                     "BG": "\u001b[48;2;27;26;49m"}
 
 # for v in background_colors.values():
 #    print(v+" ")
