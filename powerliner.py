@@ -73,6 +73,8 @@ class PowerlineSequence:
         self.lst = lst
         self.leftBackground = lst[0].background
         self.rightBackground = lst[-1].background
+        self.leftForeground = lst[0].color
+        self.rightForeground = lst[-1].color
 
     def render(self, decorate=[]) -> str:
         if len(self.lst) == 0:
@@ -80,8 +82,12 @@ class PowerlineSequence:
 
         rendered_string = ""
         if "Left" in decorate:
-            rendered_string += colors[self.leftBackground] + \
-                powerline_separators["Right"] + reset
+            if self.leftBackground == "BG":
+                rendered_string += colors[self.leftForeground] + \
+                    powerline_separators["AltRight"] + reset
+            else:
+                rendered_string += colors[self.leftBackground] + \
+                    powerline_separators["Right"] + reset
 
         if len(self.lst) == 1:
             rendered_string += self.lst[0].render
@@ -114,8 +120,12 @@ class PowerlineSequence:
                     reset
             rendered_string += lst[-1].render()
         if "Right" in decorate:
-            rendered_string += colors[self.rightBackground] + \
-                powerline_separators["Left"] + reset
+            if self.rightBackground == "BG":
+                rendered_string += colors[self.rightForeground] + \
+                    powerline_separators["AltLeft"] + reset
+            else:
+                rendered_string += colors[self.rightBackground] + \
+                    powerline_separators["Left"] + reset
         return rendered_string
 
 
