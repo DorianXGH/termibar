@@ -182,14 +182,13 @@ def renderBar():
     global lstr
     global rstr
     global p
-    sys.stdout.write("\u001b[1G")
 
     left = PowerlineSequence(userSegStr+netSegStr+wkspSegStr, True)
     right = PowerlineSequence(
         soundSegStr+batSegStr+dateSegStr+timeSegStr, True)
 
-    nlstr = left.render(["Right"])
-    nrstr = right.render(["Left"])
+    nlstr = left.render(["Right", "NoAlt"])
+    nrstr = right.render(["Left", "NoAlt"])
 
     if ((lstr+rstr) != (nlstr+nrstr)):
         lstr = nlstr
@@ -198,6 +197,7 @@ def renderBar():
         skp = p[1] - len(strip_ANSI_escape_sequences(lstr)) - \
             len(strip_ANSI_escape_sequences(rstr)) - 1
 
+        sys.stdout.write("\u001b[1G\u001b[2J")
         sys.stdout.write(lstr)
         sys.stdout.write("\u001b["+str(skp)+"C")
         sys.stdout.write(rstr)

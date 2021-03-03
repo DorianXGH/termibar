@@ -38,7 +38,7 @@ background_colors = {"Black": "\u001b[40m",
                      "BrightMagenta": "\u001b[105m",
                      "BrightCyan": "\u001b[106m",
                      "White": "\u001b[107m",
-                     "FG": "\u001b[4;2;230;209;230m",
+                     "FG": "\u001b[48;2;230;209;230m",
                      "BG": "\u001b[48;2;27;26;49m"}
 
 # for v in background_colors.values():
@@ -82,7 +82,7 @@ class PowerlineSequence:
 
         rendered_string = ""
         if "Left" in decorate:
-            if self.leftBackground == "BG":
+            if self.leftBackground == "BG" and not("NoAlt" in decorate):
                 rendered_string += colors[self.leftForeground] + \
                     powerline_separators["AltRight"] + reset
             else:
@@ -120,7 +120,7 @@ class PowerlineSequence:
                     reset
             rendered_string += lst[-1].render()
         if "Right" in decorate:
-            if self.rightBackground == "BG":
+            if self.rightBackground == "BG" and not("NoAlt" in decorate):
                 rendered_string += colors[self.rightForeground] + \
                     powerline_separators["AltLeft"] + reset
             else:
