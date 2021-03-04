@@ -10,6 +10,7 @@ from i3ipc.aio import Connection
 import getpass
 import time
 import re
+import select
 
 strip_ANSI_escape_sequences_sub = re.compile(r"""
     \x1b     # literal ESC
@@ -265,9 +266,26 @@ def renderBar():
         sys.stdout.flush()
 
 
+def click(b, x, y):
+    return
+
+
 tickquarter = 0
 ticksixteenth = 0
 ticksixtyfourth = 0
+
+clickbuf = ""
+
+tty.setraw(sys.stdin)
+mode = termios.tcgetattr(sys.stdin)
+CC = 6
+mode[CC][termios.VMIN] = 0
+mode[CC][termios.VTIME] = 0
+termios.tcsetattr(sys.stdin, termios.TCSAFLUSH, mode)
+
+sys.stdout.write("\u001b[?25l")  # hide cursor
+sys.stdout.write("\u001b[?1000h")  # report mouse
+sys.stdout.flush()
 
 while (1):
     if ticksixtyfourth == 0:
@@ -296,5 +314,15 @@ while (1):
         ticksixteenth = 0
     if ticksixtyfourth == 64:
         ticksixtyfourth = 0
+
+    keypress, _, _ = select.select([sys.stdin], [], [])
+    if keypress:
+        clickbuf += sys.stdin.read(6*30)
+        while len(clickbuf) >= 6:
+            b = ord(clickbuf[3])-32
+            x = ord(clickbuf[4])-32
+            y = ord(clickbuf[5])-32
+            click(b, x, y)
+            clickbuf = clickbuf[6:]
 
     time.sleep(1./30.)
