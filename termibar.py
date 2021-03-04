@@ -274,7 +274,7 @@ tickquarter = 0
 ticksixteenth = 0
 ticksixtyfourth = 0
 
-clickbuf = ""
+clickbuf = b""
 
 tty.setraw(sys.stdin)
 mode = termios.tcgetattr(sys.stdin)
@@ -315,14 +315,12 @@ while (1):
     if ticksixtyfourth == 64:
         ticksixtyfourth = 0
 
-    keypress, _, _ = select.select([sys.stdin], [], [])
-    if keypress:
-        clickbuf += sys.stdin.read(6*30)
-        while len(clickbuf) >= 6:
-            b = ord(clickbuf[3])-32
-            x = ord(clickbuf[4])-32
-            y = ord(clickbuf[5])-32
-            click(b, x, y)
-            clickbuf = clickbuf[6:]
+    clickbuf += sys.stdin.buffer.raw.read(6*30)
+    while len(clickbuf) >= 6:
+        b = int(clickbuf[3])-32
+        x = int(clickbuf[4])-32
+        y = int(clickbuf[5])-32
+        click(b, x, y)
+        clickbuf = clickbuf[6:]
 
     time.sleep(1./30.)
