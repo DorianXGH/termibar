@@ -104,6 +104,67 @@ def getDate():
     return date
 
 
+def getVolumeIcon():
+    icons = ["\ufc5d", "\ufa7e", "\ufa7f", "\ufa7d"]
+    vol = int(getVolume().replace("%", ""))
+    if (vol < 5):
+        return icons[0]
+    elif (vol < 25):
+        return icons[1]
+    elif (vol < 50):
+        return icons[2]
+    else:
+        return icons[3]
+
+
+def getBatteryIcon():
+    discharging = ["\uf582", "\uf579", "\uf57a", "\uf57b", "\uf57c",
+                   "\uf57d", "\uf57e", "\uf57f", "\uf580", "\uf581", "\uf578"]
+    charging = ["\uf585", "\uf586", "\uf587",
+                "\uf588", "\uf589", "\uf58a", "\uf58b", "\uf584"]
+    cap = int(getBatteryCapacity().replace("%", ""))
+    if ("discharging" in getBatteryStatus()):
+        if (cap < 5):
+            return discharging[0]
+        elif (cap < 15):
+            return discharging[1]
+        elif (cap < 25):
+            return discharging[2]
+        elif (cap < 35):
+            return discharging[3]
+        elif (cap < 45):
+            return discharging[4]
+        elif (cap < 55):
+            return discharging[5]
+        elif (cap < 65):
+            return discharging[6]
+        elif (cap < 75):
+            return discharging[7]
+        elif (cap < 85):
+            return discharging[8]
+        elif (cap < 95):
+            return discharging[9]
+        else:
+            return discharging[10]
+    else:
+        if (cap < 13):
+            return charging[0]
+        elif (cap < 25):
+            return charging[1]
+        elif (cap < 38):
+            return charging[2]
+        elif (cap < 50):
+            return charging[3]
+        elif (cap < 63):
+            return charging[4]
+        elif (cap < 75):
+            return charging[5]
+        elif (cap < 88):
+            return charging[6]
+        else:
+            return charging[7]
+
+
 def userSeg():
     return [["Black", "Grey", " \uf103 " + getpass.getuser() + " "]]
 
@@ -125,11 +186,11 @@ def dateSeg():
 
 
 def batSeg():
-    return [["BG", "DarkGrey", " \uf57d " + getBatteryCapacity() + " ", 3]]
+    return [["BG", "DarkGrey", " "+getBatteryIcon()+" " + getBatteryCapacity() + " ", 3]]
 
 
 def soundSeg():
-    return [["Black", "Grey", " \ufa7d " + getVolume() + " ", 2]]
+    return [["Black", "Grey", " "+getVolumeIcon()+" " + getVolume() + " ", 2]]
 
 
 def getpos():
@@ -228,5 +289,12 @@ while (1):
     tickquarter += 1
     ticksixteenth += 1
     ticksixtyfourth += 1
+
+    if tickquarter == 4:
+        tickquarter = 0
+    if ticksixteenth == 16:
+        ticksixteenth = 0
+    if ticksixtyfourth == 64:
+        ticksixtyfourth = 0
 
     time.sleep(1./30.)
